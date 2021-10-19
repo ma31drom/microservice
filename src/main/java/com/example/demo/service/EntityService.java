@@ -37,15 +37,19 @@ public class EntityService {
         se.setName(dto.getName());
         repo.save(se);
         if (!CollectionUtils.isEmpty(dto.getSubEntities())) {
-            se.setSubEntities(dto.getSubEntities().stream().map(sseDto -> {
+            List<SubEntity> collect = dto.getSubEntities().stream().map(sseDto -> {
                 SubEntity sse = new SubEntity();
                 sse.setSubName(sseDto.getSubEntityName());
                 sse.setEntity(se);
-                subRepo.save(sse);
                 return sse;
-            }).collect(Collectors.toList()));
+            }).collect(Collectors.toList());
+            se.setSubEntities(collect);
+            saveSubEntities(collect);
         }
-        repo.save(se);
+    }
+
+    private void saveSubEntities(List<SubEntity> collect) {
+        subRepo.saveAll(collect);
     }
 
     public List<SubEntityWithParentDataDTO> getPage(Integer pagenum, Integer pagesize) {
