@@ -38,6 +38,11 @@ public class Controller {
         service.saveEntity(dto);
     }
 
+    @PostMapping("/entities/all")
+    public void createSomeEntityInBatch(@RequestBody List<SomeEntityDTO> dto) {
+        service.saveEntities(dto);
+    }
+
     @GetMapping("/subEntities")
     public List<SubEntityWithParentDataDTO> getSomeEntity(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         return service.getPage(pageNum, pageSize);

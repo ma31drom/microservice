@@ -78,4 +78,8 @@ public class EntityService {
         }
         return dto;
     }
+
+    public void saveEntities(List<SomeEntityDTO> dto) {
+        dto.forEach(this::saveEntity);
+    }
 }
