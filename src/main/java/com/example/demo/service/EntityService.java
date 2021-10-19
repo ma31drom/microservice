@@ -80,6 +80,24 @@ public class EntityService {
     }
 
     public void saveEntities(List<SomeEntityDTO> dto) {
-        dto.forEach(this::saveEntity);
+        List<SomeEntity> collect = dto.stream().map(this::toEntity).collect(Collectors.toList());
+        repo.saveAll(collect);
+        collect.forEach(se -> saveSubEntities(se.getSubEntities()));
     }
+
+    private SomeEntity toEntity(SomeEntityDTO e) {
+        SomeEntity se = new SomeEntity();
+        se.setName(e.getName());
+        if (!CollectionUtils.isEmpty(e.getSubEntities())) {
+            List<SubEntity> collect = e.getSubEntities().stream().map(sseDto -> {
+                SubEntity sse = new SubEntity();
+                sse.setSubName(sseDto.getSubEntityName());
+                sse.setEntity(se);
+                return sse;
+            }).collect(Collectors.toList());
+            se.setSubEntities(collect);
+        }
+        return se;
+    }
+
 }
