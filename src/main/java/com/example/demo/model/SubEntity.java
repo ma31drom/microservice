@@ -16,7 +16,6 @@ public class SubEntity {
     private String subName;
 
     @ManyToOne
-    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "some_entity_id")
     private SomeEntity entity;
 

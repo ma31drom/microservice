@@ -54,8 +54,8 @@ public class EntityService {
 
     public List<SubEntityWithParentDataDTO> getPage(Integer pagenum, Integer pagesize) {
 
-        Page<SubEntity> all = subRepo.findAll(PageRequest.of(pagenum, pagesize));
-        return all.get().map(sse -> {
+        List<SubEntity> all = subRepo.findPage(PageRequest.of(pagenum, pagesize));
+        return all.stream().map(sse -> {
             SubEntityWithParentDataDTO dto = new SubEntityWithParentDataDTO();
             dto.setId(sse.getId());
             dto.setSubEntityName(sse.getSubName());
