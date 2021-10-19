@@ -8,6 +8,7 @@ import com.example.demo.model.SubEntity;
 import com.example.demo.repo.SomeEntityRepo;
 import com.example.demo.repo.SubEntityRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class EntityService {
         subRepo.saveAll(collect);
     }
 
+    @Cacheable("pages")
     public List<SubEntityWithParentDataDTO> getPage(Integer pagenum, Integer pagesize) {
 
         List<SubEntity> all = subRepo.findPage(PageRequest.of(pagenum, pagesize));
