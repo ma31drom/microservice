@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,7 +15,8 @@ public class SubEntity {
     @Column(name = "sub_name")
     private String subName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "some_entity_id")
     private SomeEntity entity;
 
