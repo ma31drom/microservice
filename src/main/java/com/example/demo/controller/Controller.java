@@ -47,24 +47,20 @@ public class Controller {
         service.saveEntity(dto);
     }
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private JsonFactory jfactory = new JsonFactory();
 
     @PostMapping("/entities/all")
     public void createSomeEntityInBatch(HttpServletRequest dto) throws IOException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory jfactory = new JsonFactory();
         jfactory.setCodec(mapper);
         JsonParser jParser = jfactory.createParser(dto.getInputStream());
 
         jParser.nextToken();
-        jParser.nextToken();//Array start
-        try {
-            while (jParser.currentToken() != JsonToken.END_ARRAY) {
-                SomeEntityDTO someEntityDTO = jParser.readValueAs(SomeEntityDTO.class);
-                service.saveEntity(someEntityDTO);
-            }
-        } catch (Exception e) {
-            System.out.println();
+        while (jParser.nextToken() != JsonToken.END_ARRAY) {
+            SomeEntityDTO someEntityDTO = jParser.readValueAs(new TypeReference<SomeEntityDTO>() {
+            });
+            service.saveEntity(someEntityDTO);
         }
     }
 
