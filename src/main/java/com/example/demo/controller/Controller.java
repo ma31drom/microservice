@@ -4,11 +4,16 @@ import com.example.demo.dto.SomeEntityDTO;
 import com.example.demo.dto.SubEntityWithParentDataDTO;
 import com.example.demo.model.SomeEntity;
 import com.example.demo.service.EntityService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -38,9 +43,12 @@ public class Controller {
         service.saveEntity(dto);
     }
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     @PostMapping("/entities/all")
-    public void createSomeEntityInBatch(@RequestBody List<SomeEntityDTO> dto) {
-        service.saveEntities(dto);
+    public void createSomeEntityInBatch(HttpServletRequest dto) throws IOException {
+        service.saveEntities(mapper.readValue(dto.getInputStream(), new TypeReference<List<SomeEntityDTO>>() {
+        }));
     }
 
     @GetMapping("/subEntities")
