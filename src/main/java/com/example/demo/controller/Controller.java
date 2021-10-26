@@ -4,6 +4,10 @@ import com.example.demo.dto.SomeEntityDTO;
 import com.example.demo.dto.SubEntityWithParentDataDTO;
 import com.example.demo.model.SomeEntity;
 import com.example.demo.service.EntityService;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -44,11 +48,24 @@ public class Controller {
     }
 
     private ObjectMapper mapper = new ObjectMapper();
+    private JsonFactory jfactory = new JsonFactory();
 
     @PostMapping("/entities/all")
     public void createSomeEntityInBatch(HttpServletRequest dto) throws IOException {
-        service.saveEntities(mapper.readValue(dto.getInputStream(), new TypeReference<List<SomeEntityDTO>>() {
-        }));
+
+        jfactory.setCodec(mapper);
+        JsonParser jParser = jfactory.createParser(dto.getInputStream());
+
+        jParser.nextToken();
+        jParser.nextToken();//Array start
+        try {
+            while (jParser.currentToken() != JsonToken.END_ARRAY) {
+                SomeEntityDTO someEntityDTO = jParser.readValueAs(SomeEntityDTO.class);
+                service.saveEntity(someEntityDTO);
+            }
+        } catch (Exception e) {
+            System.out.println();
+        }
     }
 
     @GetMapping("/subEntities")
